@@ -30,10 +30,10 @@ module ApkDownloader
         "source" => "android",
         "androidId" => ApkDownloader.configuration.android_id,
         "app" => "com.android.vending",
-        "device_country" => "fr",
-        "operatorCountry" => "fr",
-        "lang" => "fr",
-        "sdk_version" => "16"
+        "device_country" => ENV['DEVICE_COUNTRY'] ||= "fr",
+        "operatorCountry" => ENV['OPERATOR_COUNTRY'] ||= "fr",
+        "lang" => ENV['LANGUAGE'] ||= "fr",
+        "sdk_version" => ENV['SDK_VERSION'] ||= "16"
       }
 
       login_http = Net::HTTP.new LoginUri.host, LoginUri.port
@@ -51,9 +51,7 @@ module ApkDownloader
         pp response
       end
 
-      if response.body =~ /error/i
-        raise "Unable to authenticate with Google"
-      elsif response.body.include? "Auth="
+      if response.body.include? "Auth="
         @auth_token = response.body.scan(/Auth=(.*?)$/).flatten.first
       end
     end

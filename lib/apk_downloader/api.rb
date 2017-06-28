@@ -51,7 +51,9 @@ module ApkDownloader
         pp response
       end
 
-      if response.body.include? "Auth="
+      if response.body =~ /error/i
+        raise response.body
+      elsif response.body.include? "Auth="
         @auth_token = response.body.scan(/Auth=(.*?)$/).flatten.first
       end
     end
